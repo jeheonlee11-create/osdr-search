@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSDR Search</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #1a1d23; --muted: #5f6672; --line: #e2e5ea;
+    --accent: #0b5fff; --accent-soft: #e8efff; --ok: #1b7f4b; --ok-soft: #e3f4ea; --warn: #9a5b00; --warn-soft: #fff1d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0f1216; --card: #171b21; --text: #e8eaee; --muted: #9aa3b0; --line: #2a3039;
+      --accent: #5b8cff; --accent-soft: #1c2740; --ok: #5ed28f; --ok-soft: #15301f; --warn: #ffc457; --warn-soft: #3a2a0a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif; }
+  header { padding: 28px 16px 8px; max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0; font-size: 14px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 8px 16px 48px; }
+  form { display: flex; gap: 8px; margin: 16px 0 8px; }
+  input[type=text] { flex: 1; padding: 12px 14px; font-size: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--text); }
+  button { padding: 12px 18px; font-size: 15px; border: 0; border-radius: 10px; background: var(--accent); color: #fff; cursor: pointer; }
+  button:disabled { opacity: .6; cursor: wait; }
+  .examples { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .examples a { font-size: 13px; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; text-decoration: none; }
+  .status { color: var(--muted); font-size: 13px; min-height: 20px; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .grid[hidden] { display: none; }
+  .grid > div { min-width: 0; }
+  @media (min-width: 900px) { .grid { grid-template-columns: 3fr 2fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .card h2 { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 10px; }
+  .ds { padding: 10px 0; border-top: 1px solid var(--line); }
+  .ds:first-of-type { border-top: 0; }
+  .ds a.acc { font-weight: 600; color: var(--accent); text-decoration: none; }
+  .ds .title { margin: 2px 0 4px; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; margin: 2px 4px 2px 0; background: var(--accent-soft); color: var(--accent); }
+  .tag.ok { background: var(--ok-soft); color: var(--ok); }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .kv { font-size: 13px; margin: 2px 0; }
+  .kv b { font-weight: 600; }
+  pre { font-size: 12px; white-space: pre-wrap; word-break: break-all; color: var(--muted); margin: 6px 0 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th, td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--card); }
+  .tablewrap { max-height: 420px; overflow: auto; margin-top: 8px; }
+  .note { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>NASA OSDR search in plain English</h1>
+  <p class="sub" id="info">Semantic search over GeneLab / OSDR datasets, with an LLM-built, schema-validated sample query.</p>
+</header>
+<main>
+  <form id="f">
+    <input type="text" id="q" placeholder="e.g. how does spaceflight affect mouse liver gene expression?" autofocus>
+    <button id="go" type="submit">Search</button>
+  </form>
+  <div class="examples" id="examples"></div>
+  <div class="status" id="status"></div>
+  <div class="grid" id="results" hidden>
+    <div>
+      <div class="card"><h2>Datasets</h2><div id="datasets"></div></div>
+    </div>
+    <div>
+      <div class="card"><h2>Structured query</h2><div id="structured"></div></div>
+      <div class="card" style="margin-top:16px"><h2>Samples</h2><div id="samples"></div></div>
+    </div>
+  </div>
+</main>
+<script>
+const EXAMPLES = [
+  "how does spaceflight affect mouse liver gene expression?",
+  "RNA-seq of Arabidopsis roots grown on the ISS",
+  "microbiome of surfaces inside the space station",
+  "human cells exposed to simulated galactic cosmic radiation",
+  "soleus muscle atrophy in rats after hindlimb unloading",
+];
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+$("examples").innerHTML = EXAMPLES.map((e) => `<a href="#" data-q="${esc(e)}">${esc(e)}</a>`).join("");
+$("examples").addEventListener("click", (ev) => {
+  const a = ev.target.closest("a"); if (!a) return;
+  ev.preventDefault(); $("q").value = a.dataset.q; run();
+});
+$("f").addEventListener("submit", (ev) => { ev.preventDefault(); run(); });
+
+fetch("/api/info").then((r) => r.json()).then((i) => {
+  $("info").textContent = `${i.datasets} datasets · ${i.samples.toLocaleString()} samples indexed · ` +
+    (i.llm_enabled ? "LLM query translation on" : "LLM query translation off (no ANTHROPIC_API_KEY) – semantic search only");
+});
+
+async function run() {
+  const q = $("q").value.trim(); if (!q) return;
+  $("go").disabled = true; $("status").textContent = "Searching…"; $("results").hidden = true;
+  try {
+    const r = await fetch(`/api/search?q=${encodeURIComponent(q)}&k=10`);
+    if (!r.ok) throw new Error(await r.text());
+    render(await r.json());
+  } catch (e) {
+    $("status").textContent = "Error: " + e.message;
+  } finally { $("go").disabled = false; }
+}
+
+function render(res) {
+  $("status").textContent = `${res.datasets.length} datasets · ${res.elapsed_s}s` + (res.llm_used ? "" : " · semantic only");
+  $("results").hidden = false;
+  $("datasets").innerHTML = res.datasets.map((d) => `
+    <div class="ds">
+      <a class="acc" href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.accession)}</a>
+      <span class="meta"> score ${d.score.toFixed(3)}</span>
+      <div class="title">${esc(d.title) || "<i>untitled</i>"}</div>
+      <div class="meta">${esc(d.organism.join(", "))}${d.material_type.length ? " · " + esc(d.material_type.join(", ")) : ""}${d.mission ? " · " + esc(d.mission) : ""}</div>
+      <div>${d.assays.map((a) => `<span class="tag">${esc(a)}</span>`).join("")}${d.matched_filters.map((m) => `<span class="tag ok">matches ${esc(m)}</span>`).join("")}</div>
+    </div>`).join("");
+
+  const s = res.structured_query;
+  let html = "";
+  if (!s) {
+    html += `<p class="note">${res.llm_error ? "LLM error: " + esc(res.llm_error) : "No LLM translation (set ANTHROPIC_API_KEY to enable). Ranking is purely semantic."}</p>`;
+  } else {
+    html += `<p class="note">${esc(s.rationale)}</p>`;
+    const keys = Object.keys(res.validated_filters);
+    html += keys.length
+      ? keys.map((k) => `<div class="kv"><b>${esc(k)}</b>: ${res.validated_filters[k].map((v) => `<span class="tag ok">${esc(v)}</span>`).join("")}</div>`).join("")
+      : `<div class="kv">No metadata filters – semantic ranking only.</div>`;
+    if (res.dropped_filters.length)
+      html += `<div class="kv"><b>Dropped (not in schema)</b>: ${res.dropped_filters.map((v) => `<span class="tag warn">${esc(v)}</span>`).join("")}</div>`;
+  }
+  if (res.samples_url) html += `<pre>GET ${esc(res.samples_url)}</pre>`;
+  $("structured").innerHTML = html;
+
+  const sm = res.samples;
+  if (!sm) { $("samples").innerHTML = `<p class="note">Sample fetch skipped.</p>`; return; }
+  if (sm.error) { $("samples").innerHTML = `<p class="note">OSDR API error: ${esc(sm.error)}</p>`; return; }
+  if (!sm.rows.length) { $("samples").innerHTML = `<p class="note">No samples match these filters within the top datasets.</p>`; return; }
+  const cols = Object.keys(sm.rows[0]);
+  $("samples").innerHTML = `<p class="note">${sm.total.toLocaleString()} matching samples across the top datasets${sm.truncated ? ` (showing ${sm.rows.length})` : ""}.</p>
+    <div class="tablewrap"><table><thead><tr>${cols.map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead>
+    <tbody>${sm.rows.map((r) => `<tr>${cols.map((c) => `<td>${esc(r[c] ?? "")}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+}
+</script>
+</body>
+</html>

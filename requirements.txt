@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+anthropic
+fastembed
+numpy
+pydantic
+requests
+python-dotenv
