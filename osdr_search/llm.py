@@ -31,6 +31,10 @@ class StructuredQuery(BaseModel):
     search_text: str = Field(description="A short, specific restatement of the question for semantic search.")
     rationale: str = Field(description="One sentence on why these filters were chosen.")
 
+    def filters(self):
+        """Just the filter fields, for schema.validate (search_text/rationale are not filters)."""
+        return self.model_dump(include=set(QUERY_FIELDS))
+
 
 SYSTEM_HEAD = """You translate plain-English questions about NASA space biology data into filters for the
 OSDR (Open Science Data Repository) sample metadata API.

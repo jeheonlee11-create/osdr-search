@@ -7,6 +7,7 @@ dropped (and reported) rather than sent to the API.
 
 import difflib
 import json
+import re
 from collections import defaultdict
 
 from .fetch import SAMPLES_PATH
@@ -25,12 +26,47 @@ QUERY_FIELDS = {
 
 FUZZY_CUTOFF = 0.88
 
+# Anatomy-like fields whose values are free-text descriptions of a site
+# ("Liver", "Left Lobe of the Liver", "Right soleus"). A filter value matches
+# one of these when its words appear, in order and as whole words, inside the
+# dataset's value. Every other field (organism, assays, missions, flight
+# condition) is a controlled term and only matches case-insensitively exactly:
+# "microarray" must not match "protein microarray", "flight" not "pre-flight".
+PHRASE_FIELDS = ("material_type", "tissue")
+
+
+def _tokens(value):
+    return tuple(re.findall(r"[a-z0-9]+", str(value).lower()))
+
+
+def phrase_in(needle, haystack):
+    """True when needle's words occur contiguously, as whole words, in haystack.
+
+    "Liver" is in "Left Lobe of the Liver"; it is not in "Delivery", and
+    "Lung" is not in "Lunge".
+    """
+    n, h = _tokens(needle), _tokens(haystack)
+    if not n:
+        return False
+    return any(h[i:i + len(n)] == n for i in range(len(h) - len(n) + 1))
+
+
+def value_matches(field, wanted, have):
+    """Does a validated filter value match one value a dataset carries?"""
+    if field in PHRASE_FIELDS:
+        return phrase_in(wanted, have)
+    # validate() folds case variants ("Blood"/"blood") onto one spelling, so
+    # compare case-insensitively or the other spelling would look contradictory
+    return str(wanted).lower() == str(have).lower()
+
 
 class Schema:
-    def __init__(self):
-        if not SAMPLES_PATH.exists():
-            raise FileNotFoundError(f"{SAMPLES_PATH} missing; run `python -m osdr_search.fetch samples`")
-        rows = json.loads(SAMPLES_PATH.read_text())
+    def __init__(self, rows=None):
+        """rows: sample-table records (as in data/samples.json); loaded from disk when omitted."""
+        if rows is None:
+            if not SAMPLES_PATH.exists():
+                raise FileNotFoundError(f"{SAMPLES_PATH} missing; run `python -m osdr_search.fetch samples`")
+            rows = json.loads(SAMPLES_PATH.read_text())
         self.sample_count = len(rows)
         # vocab[field] -> sorted list of accepted values
         # per_dataset[accession][field] -> set of values seen in that dataset's samples
@@ -86,7 +122,7 @@ class Schema:
         for field, vals in clean.items():
             if field in ("spaceflight", "tissue") and field not in have:
                 continue  # sparse fields: absence is not evidence against
-            if have.get(field, set()) & set(vals):
+            if any(value_matches(field, v, h) for v in vals for h in have.get(field, ())):
                 matched.append(field)
             else:
                 contradicted.append(field)

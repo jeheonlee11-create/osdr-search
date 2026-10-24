@@ -24,7 +24,7 @@ class SearchEngine:
 
     def rank(self, question, structured=None, k=10):
         """Semantic retrieval, then re-rank by validated structured filters."""
-        clean, dropped = self.schema.validate(structured.model_dump() if structured else {})
+        clean, dropped = self.schema.validate(structured.filters() if structured else {})
         clean = {f: v for f, v in clean.items() if f in self.schema.vocab}
         text = structured.search_text if structured and structured.search_text else question
         semantic = self.index.search(text, k=CANDIDATES)

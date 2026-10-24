@@ -76,6 +76,13 @@ python -m eval.run_eval --llm    # with LLM filters + re-ranking
 
 Results are written to `eval/results_<mode>.json`.
 
+Unit tests (no network, API key or `data/` files needed):
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
 | mode | top-1 | top-3 | top-5 |
 |---|---|---|---|
 | semantic only (2026-10-20) | 40/50 = 80% | 48/50 = 96% | 48/50 = 96% |
@@ -105,4 +112,5 @@ osdr_search/
 eval/
   testset.json  50 labelled queries
   run_eval.py   top-k accuracy
+tests/          pytest: filter validation + matching on a tiny fixture
 ```
