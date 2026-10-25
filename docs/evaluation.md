@@ -125,6 +125,10 @@ Reading it:
   resupply flight" (0 of 10 correct: the mission is one token pair among many
   mouse spaceflight studies) and "plant roots grown in space or under altered
   gravity". Both are cases for the structured mission / material filters.
+- Fusion is not free: for "gut bacteria in mouse droppings" semantic search
+  ranks all 8 correct datasets first (recall@5 1.0), BM25 finds one, and the
+  fused list keeps only two of them in its top 10 (recall@5 0.2). Documents that
+  both rankers return at middling ranks outvote documents only one ranker finds.
 
 ## Not evaluated
 
