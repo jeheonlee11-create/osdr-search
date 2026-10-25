@@ -4,6 +4,8 @@ Ask a question in plain English and get the matching NASA space biology datasets
 
 [![CI](https://github.com/jeheonlee11-create/osdr-search/actions/workflows/ci.yml/badge.svg)](https://github.com/jeheonlee11-create/osdr-search/actions/workflows/ci.yml)
 
+![Search results for "how does spaceflight affect mouse liver gene expression?" with keyword and semantic ranks and live sample rows](docs/images/osdr-results.png)
+
 ## Why
 
 [NASA OSDR / GeneLab](https://osdr.nasa.gov/bio/) holds about 640 public space biology datasets (51,369 samples) from flown and ground experiments. Finding the right ones normally means knowing its metadata schema: organism, material type, assay technology, mission, factor values. This tool takes a question like "how does spaceflight affect mouse liver gene expression?" and does that mapping for you, without letting a language model invent field values that do not exist.
