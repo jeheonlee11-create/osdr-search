@@ -9,7 +9,7 @@ from .families import build_families, collapse, members_by_family
 from .fetch import DATASETS_PATH
 from .fusion import RRF_K, rrf
 from .index import VectorIndex, check_fingerprint, doc_text
-from .llm import QueryTranslator
+from .llm import QueryTranslator, accept_search_text
 from .osdr_api import build_url, run
 from .schema import Schema
 
@@ -20,6 +20,12 @@ CANDIDATES = 50  # candidates taken from each ranker before fusion and re-rankin
 # The validated LLM filters vote in the same rank fusion as BM25 and the
 # embeddings, as one more ranker with this weight (see SearchEngine.rerank).
 FILTER_WEIGHT = 1.0
+# Rankings of the LLM's rewritten search_text get half a vote each, so the rewrite
+# can refine the ranking but never outvote the user's own words.
+REWRITE_WEIGHT = 0.5
+# What the browser sees when a step fails; the exception itself is only logged server-side.
+LLM_ERROR = "The LLM step failed, so these results use keyword + semantic ranking without filters."
+SAMPLES_ERROR = "The live OSDR sample query failed or timed out. The samples URL above can be opened directly."
 
 
 def _study_url(acc):
@@ -95,9 +101,12 @@ class SearchEngine:
         """
         clean, dropped = self.schema.validate(structured.filters() if structured else {})
         clean = {f: v for f, v in clean.items() if f in self.schema.vocab}
-        text = structured.search_text if structured and structured.search_text else question
-        lists = self.rankings(text, retriever)
-        fused = rrf(lists)
+        lists = self.rankings(question, retriever)
+        # the LLM's rewrite adds votes next to the original question; it never replaces it
+        rewrite = accept_search_text(question, structured.search_text) if structured else None
+        if rewrite and rewrite.lower() != question.lower():
+            lists.update({f"{name}_rewrite": ids for name, ids in self.rankings(rewrite, retriever).items()})
+        fused = rrf(lists, weights={name: REWRITE_WEIGHT for name in lists if name.endswith("_rewrite")})
         ranked = self.rerank(fused, clean)
         positions = {name: {a: i for i, a in enumerate(ids, start=1)} for name, ids in lists.items()}
         info = {acc: (score, matched) for acc, score, matched in ranked}
@@ -136,13 +145,16 @@ class SearchEngine:
         if self.translator and self.translator.enabled:
             try:
                 structured = self.translator.translate(question)
-            except Exception as e:  # noqa: BLE001 - degrade to retrieval-only
-                llm_error = f"{type(e).__name__}: {e}"
+            except Exception:  # noqa: BLE001 - degrade to retrieval-only
+                # details go to the server log only; exception text can carry URLs, keys or internals
+                log.exception("LLM translation failed")
+                llm_error = LLM_ERROR
         hits, clean, dropped = self.rank(question, structured, k=k)
         result = {
             "question": question,
             "retriever": self.retriever,
             "structured_query": structured.model_dump() if structured else None,
+            "search_text_used": bool(structured and accept_search_text(question, structured.search_text)),
             "validated_filters": clean,
             "dropped_filters": dropped,
             "llm_used": structured is not None,
@@ -160,7 +172,8 @@ class SearchEngine:
                 order = {h["accession"]: i for i, h in enumerate(hits)}
                 samples["rows"].sort(key=lambda r: order.get(r.get("accession"), len(order)))
                 result["samples"] = samples
-            except Exception as e:  # noqa: BLE001
-                result["samples"] = {"error": f"{type(e).__name__}: {e}", "total": 0, "rows": []}
+            except Exception:  # noqa: BLE001
+                log.exception("OSDR sample query failed: %s", url)
+                result["samples"] = {"error": SAMPLES_ERROR, "total": 0, "rows": []}
         result["elapsed_s"] = round(time.time() - t0, 2)
         return result

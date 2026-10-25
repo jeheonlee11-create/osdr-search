@@ -2,6 +2,10 @@
 
 The model only sees the real vocabulary for each field, and whatever it
 returns is validated again in schema.py before anything reaches the API.
+
+The task is a constrained lookup (copy values from a list), so the default is
+a small, fast model at low effort. Configure with environment variables:
+OSDR_LLM_MODEL (default claude-haiku-5-5) and OSDR_LLM_TIMEOUT_S (default 15).
 """
 
 import os
@@ -12,11 +16,15 @@ import anthropic
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 
+from .bm25 import tokenize
 from .schema import QUERY_FIELDS
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
-MODEL = "claude-opus-5-5"
+DEFAULT_MODEL = "claude-haiku-5-5"
+DEFAULT_TIMEOUT_S = 15.0
+MAX_SEARCH_TEXT = 300   # characters
+MIN_OVERLAP = 1 / 3     # share of the question's content words the rewrite must keep
 
 
 class StructuredQuery(BaseModel):
@@ -65,11 +73,34 @@ def _vocab_block(schema):
     return "\n".join(lines)
 
 
+def accept_search_text(question, search_text):
+    """The LLM's rewrite of the question, or None when it is empty, too long or has drifted off topic.
+
+    Drift check: at least a third of the question's content words must survive in
+    the rewrite. Synonyms are fine ("mouse liver" -> "Mus musculus liver
+    transcriptome" keeps "liver"); an unrelated rewrite is not. The original
+    question is always ranked as well, so a rejected rewrite only loses its
+    extra vote.
+    """
+    text = " ".join(str(search_text or "").split())
+    if not text or len(text) > MAX_SEARCH_TEXT:
+        return None
+    q = set(tokenize(question))
+    if q and len(q & set(tokenize(text))) / len(q) < MIN_OVERLAP:
+        return None
+    return text
+
+
 class QueryTranslator:
-    def __init__(self, schema):
+    def __init__(self, schema, model=None, timeout=None, client=None):
         self.schema = schema
-        self.enabled = bool(os.environ.get("ANTHROPIC_API_KEY"))
-        self.client = anthropic.Anthropic() if self.enabled else None
+        self.model = model or os.environ.get("OSDR_LLM_MODEL") or DEFAULT_MODEL
+        self.timeout = float(timeout or os.environ.get("OSDR_LLM_TIMEOUT_S") or DEFAULT_TIMEOUT_S)
+        self.enabled = client is not None or bool(os.environ.get("ANTHROPIC_API_KEY"))
+        if client is None and self.enabled:
+            # one retry at most: a search request should fail fast and fall back to retrieval only
+            client = anthropic.Anthropic(timeout=self.timeout, max_retries=1)
+        self.client = client
         self.system = [
             {"type": "text", "text": SYSTEM_HEAD},
             # the vocabulary is large and identical on every call, so cache it
@@ -80,10 +111,11 @@ class QueryTranslator:
         if not self.enabled:
             return None
         response = self.client.messages.parse(
-            model=MODEL,
-            max_tokens=2048,
+            model=self.model,
+            max_tokens=4096,
             system=self.system,
             messages=[{"role": "user", "content": question}],
+            output_config={"effort": "low"},
             output_format=StructuredQuery,
         )
         if response.stop_reason == "refusal" or response.parsed_output is None:

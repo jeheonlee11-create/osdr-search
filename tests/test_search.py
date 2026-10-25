@@ -16,7 +16,8 @@ def liver_engine(retriever="semantic"):
 
 
 def test_rank_reports_no_dropped_for_valid_llm_query():
-    sq = StructuredQuery(material_type=["Liver"], search_text="liver", rationale="asked about liver")
+    # search_text equal to the question, so only the filters can change the order
+    sq = StructuredQuery(material_type=["Liver"], search_text="mouse liver?", rationale="asked about liver")
     hits, clean, dropped = liver_engine().rank("mouse liver?", sq, k=2)
     assert dropped == []
     assert clean == {"material_type": ["Liver"]}

@@ -110,7 +110,7 @@ async function run() {
   } finally { $("go").disabled = false; }
 }
 
-const RANKER = { semantic: "semantic", bm25: "keyword" };
+const RANKER = { semantic: "semantic", bm25: "keyword", semantic_rewrite: "semantic (rewrite)", bm25_rewrite: "keyword (rewrite)" };
 function rankText(ranks) {
   return Object.entries(ranks).map(([k, v]) => `${RANKER[k] || k} ${v ? "#" + v : "–"}`).join(" · ");
 }
@@ -133,7 +133,7 @@ function render(res) {
   const s = res.structured_query;
   let html = "";
   if (!s) {
-    html += `<p class="note">${res.llm_error ? "LLM error: " + esc(res.llm_error) : "No LLM translation (set ANTHROPIC_API_KEY to enable). Ranking is keyword + semantic only."}</p>`;
+    html += `<p class="note">${res.llm_error ? esc(res.llm_error) : "No LLM translation (set ANTHROPIC_API_KEY to enable). Ranking is keyword + semantic only."}</p>`;
   } else {
     html += `<p class="note">${esc(s.rationale)}</p>`;
     const keys = Object.keys(res.validated_filters);
@@ -148,7 +148,7 @@ function render(res) {
 
   const sm = res.samples;
   if (!sm) { $("samples").innerHTML = `<p class="note">Sample fetch skipped.</p>`; return; }
-  if (sm.error) { $("samples").innerHTML = `<p class="note">OSDR API error: ${esc(sm.error)}</p>`; return; }
+  if (sm.error) { $("samples").innerHTML = `<p class="note">${esc(sm.error)}</p>`; return; }
   if (!sm.rows.length) { $("samples").innerHTML = `<p class="note">No samples match these filters within the top datasets.</p>`; return; }
   const cols = Object.keys(sm.rows[0]);
   $("samples").innerHTML = `<p class="note">${sm.total.toLocaleString()} matching samples across the top datasets${sm.truncated ? ` (showing ${sm.rows.length})` : ""}.</p>
