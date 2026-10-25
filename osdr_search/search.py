@@ -1,15 +1,18 @@
 """The end-to-end pipeline: question -> datasets -> sample-level rows."""
 
 import json
+import logging
 import time
 
 from .bm25 import BM25
 from .fetch import DATASETS_PATH
 from .fusion import RRF_K, rrf
-from .index import VectorIndex, doc_text
+from .index import VectorIndex, check_fingerprint, doc_text
 from .llm import QueryTranslator
 from .osdr_api import build_url, run
 from .schema import Schema
+
+log = logging.getLogger(__name__)
 
 RETRIEVERS = ("hybrid", "semantic", "bm25")
 CANDIDATES = 50  # candidates taken from each ranker before fusion and re-ranking
@@ -30,7 +33,13 @@ class SearchEngine:
         self.datasets = {d["accession"]: d for d in datasets}
         self.bm25 = BM25(self.datasets, [doc_text(d) for d in self.datasets.values()])
         self.index = index if index is not None else VectorIndex()
+        if hasattr(self.index, "fingerprint"):
+            check_fingerprint(self.index, datasets)  # fail now, with a rebuild hint, not with a KeyError later
         self.schema = schema if schema is not None else Schema()
+        no_samples = [a for a in self.datasets if a not in self.schema.per_dataset]
+        if no_samples:
+            log.warning("%d datasets have no rows in the sample table (e.g. %s); filters cannot match them. "
+                        "Refresh it with `python -m osdr_search.fetch samples`.", len(no_samples), no_samples[:3])
         if translator is None and use_llm:
             translator = QueryTranslator(self.schema)
         self.translator = translator
