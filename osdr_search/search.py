@@ -3,39 +3,81 @@
 import json
 import time
 
+from .bm25 import BM25
 from .fetch import DATASETS_PATH
-from .index import VectorIndex
+from .fusion import RRF_K, rrf
+from .index import VectorIndex, doc_text
 from .llm import QueryTranslator
 from .osdr_api import build_url, run
 from .schema import Schema
 
-CANDIDATES = 50      # semantic candidates considered before re-ranking
-MATCH_BONUS = 0.08   # per validated filter field a dataset satisfies
-MISS_PENALTY = 0.12  # per validated filter field a dataset contradicts
+RETRIEVERS = ("hybrid", "semantic", "bm25")
+CANDIDATES = 50  # candidates taken from each ranker before fusion and re-ranking
+# The validated LLM filters vote in the same rank fusion as BM25 and the
+# embeddings, as one more ranker with this weight (see SearchEngine.rerank).
+FILTER_WEIGHT = 1.0
 
 
 class SearchEngine:
-    def __init__(self, use_llm=True):
-        self.datasets = {d["accession"]: d for d in json.loads(DATASETS_PATH.read_text())}
-        self.index = VectorIndex()
-        self.schema = Schema()
-        self.translator = QueryTranslator(self.schema) if use_llm else None
+    def __init__(self, use_llm=True, retriever="hybrid", *, datasets=None, index=None, schema=None,
+                 translator=None):
+        """Loads data/ files for any component not passed in (tests pass small fakes)."""
+        if retriever not in RETRIEVERS:
+            raise ValueError(f"retriever must be one of {RETRIEVERS}")
+        self.retriever = retriever
+        if datasets is None:
+            datasets = json.loads(DATASETS_PATH.read_text())
+        self.datasets = {d["accession"]: d for d in datasets}
+        self.bm25 = BM25(self.datasets, [doc_text(d) for d in self.datasets.values()])
+        self.index = index if index is not None else VectorIndex()
+        self.schema = schema if schema is not None else Schema()
+        if translator is None and use_llm:
+            translator = QueryTranslator(self.schema)
+        self.translator = translator
         self.llm_enabled = bool(self.translator and self.translator.enabled)
 
-    def rank(self, question, structured=None, k=10):
-        """Semantic retrieval, then re-rank by validated structured filters."""
+    def rankings(self, text, retriever=None):
+        """{ranker name: [accession, ...]} for one piece of query text."""
+        retriever = retriever or self.retriever
+        out = {}
+        if retriever in ("hybrid", "semantic"):
+            out["semantic"] = [a for a, _ in self.index.search(text, k=CANDIDATES)]
+        if retriever in ("hybrid", "bm25"):
+            out["bm25"] = [a for a, _ in self.bm25.search(text, k=CANDIDATES)]
+        return out
+
+    def rerank(self, fused, clean):
+        """Add the validated filters as one more ranker in the fusion.
+
+        Candidates are ordered by (filters matched - filters contradicted), ties
+        kept in fused order, and that list gets an RRF vote like any other
+        ranker; exact ties are then broken by the filter evidence. A
+        rank-based vote is on the same scale as the fused scores whatever the
+        retrievers' raw scores look like, so there is no hand-set bonus to
+        recalibrate when the retriever changes.
+        """
+        if not clean:
+            return [(acc, score, []) for acc, score in fused]
+        evidence = {acc: self.schema.dataset_matches(acc, clean) for acc, _ in fused}
+        net = {acc: len(m) - len(c) for acc, (m, c) in evidence.items()}
+        order = {acc: i for i, (acc, _) in enumerate(fused)}
+        by_filters = sorted(order, key=lambda a: (-net[a], order[a]))
+        bonus = {acc: FILTER_WEIGHT / (RRF_K + r) for r, acc in enumerate(by_filters, start=1)}
+        out = [(acc, score + bonus[acc], evidence[acc][0]) for acc, score in fused]
+        # exact ties (common with a single retriever) go to the dataset with more filter evidence
+        return sorted(out, key=lambda r: (-round(r[1], 12), -net[r[0]], order[r[0]]))
+
+    def rank(self, question, structured=None, k=10, retriever=None):
+        """Retrieve (BM25 and/or embeddings, fused by RRF), then re-rank by validated filters."""
         clean, dropped = self.schema.validate(structured.filters() if structured else {})
         clean = {f: v for f, v in clean.items() if f in self.schema.vocab}
         text = structured.search_text if structured and structured.search_text else question
-        semantic = self.index.search(text, k=CANDIDATES)
-        ranked = []
-        for acc, score in semantic:
-            matched, contradicted = self.schema.dataset_matches(acc, clean)
-            final = score + MATCH_BONUS * len(matched) - MISS_PENALTY * len(contradicted)
-            ranked.append((final, score, acc, matched))
-        ranked.sort(key=lambda r: -r[0])
+        lists = self.rankings(text, retriever)
+        fused = rrf(lists)
+        ranked = self.rerank(fused, clean)
+        positions = {name: {a: i for i, a in enumerate(ids, start=1)} for name, ids in lists.items()}
         hits = []
-        for final, score, acc, matched in ranked[:k]:
+        for acc, score, matched in ranked[:k]:
             d = self.datasets[acc]
             hits.append({
                 "accession": acc,
@@ -45,8 +87,8 @@ class SearchEngine:
                 "assays": sorted(set(d["assay_technology"])),
                 "mission": d["mission"],
                 "project_type": d["project_type"],
-                "score": round(final, 4),
-                "semantic_score": round(score, 4),
+                "score": round(score, 5),
+                "ranks": {name: pos.get(acc) for name, pos in positions.items()},
                 "matched_filters": matched,
                 "url": f"https://osdr.nasa.gov/bio/repo/data/studies/{acc}",
             })
@@ -59,11 +101,12 @@ class SearchEngine:
         if self.translator and self.translator.enabled:
             try:
                 structured = self.translator.translate(question)
-            except Exception as e:  # noqa: BLE001 - degrade to semantic-only
+            except Exception as e:  # noqa: BLE001 - degrade to retrieval-only
                 llm_error = f"{type(e).__name__}: {e}"
         hits, clean, dropped = self.rank(question, structured, k=k)
         result = {
             "question": question,
+            "retriever": self.retriever,
             "structured_query": structured.model_dump() if structured else None,
             "validated_filters": clean,
             "dropped_filters": dropped,
