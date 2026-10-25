@@ -48,12 +48,15 @@
   th { color: var(--muted); font-weight: 600; position: sticky; top: 0; background: var(--card); }
   .tablewrap { max-height: 420px; overflow: auto; margin-top: 8px; }
   .note { font-size: 13px; color: var(--muted); }
+  details.related { margin-top: 4px; font-size: 13px; }
+  details.related summary { cursor: pointer; color: var(--accent); }
+  details.related a { color: var(--accent); text-decoration: none; font-weight: 600; }
 </style>
 </head>
 <body>
 <header>
   <h1>NASA OSDR search in plain English</h1>
-  <p class="sub" id="info">Semantic search over GeneLab / OSDR datasets, with an LLM-built, schema-validated sample query.</p>
+  <p class="sub" id="info">Keyword + semantic search over GeneLab / OSDR datasets, with an LLM-built, schema-validated sample query.</p>
 </header>
 <main>
   <form id="f">
@@ -92,7 +95,7 @@ $("f").addEventListener("submit", (ev) => { ev.preventDefault(); run(); });
 
 fetch("/api/info").then((r) => r.json()).then((i) => {
   $("info").textContent = `${i.datasets} datasets · ${i.samples.toLocaleString()} samples indexed · ` +
-    (i.llm_enabled ? "LLM query translation on" : "LLM query translation off (no ANTHROPIC_API_KEY) – semantic search only");
+    (i.llm_enabled ? "LLM query translation on" : "LLM query translation off (no ANTHROPIC_API_KEY) – keyword + semantic search only");
 });
 
 async function run() {
@@ -107,28 +110,36 @@ async function run() {
   } finally { $("go").disabled = false; }
 }
 
+const RANKER = { semantic: "semantic", bm25: "keyword" };
+function rankText(ranks) {
+  return Object.entries(ranks).map(([k, v]) => `${RANKER[k] || k} ${v ? "#" + v : "–"}`).join(" · ");
+}
+
 function render(res) {
-  $("status").textContent = `${res.datasets.length} datasets · ${res.elapsed_s}s` + (res.llm_used ? "" : " · semantic only");
+  $("status").textContent = `${res.datasets.length} datasets · ${res.elapsed_s}s` + (res.llm_used ? "" : " · no LLM filters");
   $("results").hidden = false;
   $("datasets").innerHTML = res.datasets.map((d) => `
     <div class="ds">
       <a class="acc" href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.accession)}</a>
-      <span class="meta"> score ${d.score.toFixed(3)}</span>
+      <span class="meta"> ${esc(rankText(d.ranks))}</span>
       <div class="title">${esc(d.title) || "<i>untitled</i>"}</div>
       <div class="meta">${esc(d.organism.join(", "))}${d.material_type.length ? " · " + esc(d.material_type.join(", ")) : ""}${d.mission ? " · " + esc(d.mission) : ""}</div>
       <div>${d.assays.map((a) => `<span class="tag">${esc(a)}</span>`).join("")}${d.matched_filters.map((m) => `<span class="tag ok">matches ${esc(m)}</span>`).join("")}</div>
+      ${d.related.length ? `<details class="related"><summary>+${d.related.length} related</summary>${d.related.map((r) => `
+        <div class="meta"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.accession)}</a>
+          ${esc([r.material_type.join(", "), r.assays.join(", ")].filter(Boolean).join(" · "))}</div>`).join("")}</details>` : ""}
     </div>`).join("");
 
   const s = res.structured_query;
   let html = "";
   if (!s) {
-    html += `<p class="note">${res.llm_error ? "LLM error: " + esc(res.llm_error) : "No LLM translation (set ANTHROPIC_API_KEY to enable). Ranking is purely semantic."}</p>`;
+    html += `<p class="note">${res.llm_error ? "LLM error: " + esc(res.llm_error) : "No LLM translation (set ANTHROPIC_API_KEY to enable). Ranking is keyword + semantic only."}</p>`;
   } else {
     html += `<p class="note">${esc(s.rationale)}</p>`;
     const keys = Object.keys(res.validated_filters);
     html += keys.length
       ? keys.map((k) => `<div class="kv"><b>${esc(k)}</b>: ${res.validated_filters[k].map((v) => `<span class="tag ok">${esc(v)}</span>`).join("")}</div>`).join("")
-      : `<div class="kv">No metadata filters – semantic ranking only.</div>`;
+      : `<div class="kv">No metadata filters – keyword + semantic ranking only.</div>`;
     if (res.dropped_filters.length)
       html += `<div class="kv"><b>Dropped (not in schema)</b>: ${res.dropped_filters.map((v) => `<span class="tag warn">${esc(v)}</span>`).join("")}</div>`;
   }

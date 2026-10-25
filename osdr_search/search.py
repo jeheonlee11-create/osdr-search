@@ -5,6 +5,7 @@ import logging
 import time
 
 from .bm25 import BM25
+from .families import build_families, collapse, members_by_family
 from .fetch import DATASETS_PATH
 from .fusion import RRF_K, rrf
 from .index import VectorIndex, check_fingerprint, doc_text
@@ -21,6 +22,14 @@ CANDIDATES = 50  # candidates taken from each ranker before fusion and re-rankin
 FILTER_WEIGHT = 1.0
 
 
+def _study_url(acc):
+    return f"https://osdr.nasa.gov/bio/repo/data/studies/{acc}"
+
+
+def _accession_number(acc):
+    return int(acc.split("-")[1]) if acc.split("-")[-1].isdigit() else 0
+
+
 class SearchEngine:
     def __init__(self, use_llm=True, retriever="hybrid", *, datasets=None, index=None, schema=None,
                  translator=None):
@@ -32,6 +41,8 @@ class SearchEngine:
             datasets = json.loads(DATASETS_PATH.read_text())
         self.datasets = {d["accession"]: d for d in datasets}
         self.bm25 = BM25(self.datasets, [doc_text(d) for d in self.datasets.values()])
+        self.family_of = build_families(datasets)
+        self.family_members = members_by_family(self.family_of)
         self.index = index if index is not None else VectorIndex()
         if hasattr(self.index, "fingerprint"):
             check_fingerprint(self.index, datasets)  # fail now, with a rebuild hint, not with a KeyError later
@@ -76,8 +87,12 @@ class SearchEngine:
         # exact ties (common with a single retriever) go to the dataset with more filter evidence
         return sorted(out, key=lambda r: (-round(r[1], 12), -net[r[0]], order[r[0]]))
 
-    def rank(self, question, structured=None, k=10, retriever=None):
-        """Retrieve (BM25 and/or embeddings, fused by RRF), then re-rank by validated filters."""
+    def rank(self, question, structured=None, k=10, retriever=None, collapse_families=True):
+        """Retrieve (BM25 and/or embeddings, fused by RRF), re-rank by validated filters, collapse families.
+
+        With collapse_families, each near-duplicate family (families.py) takes one slot: its best-ranked
+        member, with the family's other datasets listed under "related".
+        """
         clean, dropped = self.schema.validate(structured.filters() if structured else {})
         clean = {f: v for f, v in clean.items() if f in self.schema.vocab}
         text = structured.search_text if structured and structured.search_text else question
@@ -85,9 +100,17 @@ class SearchEngine:
         fused = rrf(lists)
         ranked = self.rerank(fused, clean)
         positions = {name: {a: i for i, a in enumerate(ids, start=1)} for name, ids in lists.items()}
+        info = {acc: (score, matched) for acc, score, matched in ranked}
+        if collapse_families:
+            groups = collapse([acc for acc, _, _ in ranked], self.family_of)[:k]
+        else:
+            groups = [(acc, []) for acc, _, _ in ranked[:k]]
         hits = []
-        for acc, score, matched in ranked[:k]:
+        for acc, folded in groups:
+            score, matched = info[acc]
             d = self.datasets[acc]
+            fam = self.family_members.get(self.family_of.get(acc), [acc]) if collapse_families else [acc]
+            related = folded + sorted((a for a in fam if a != acc and a not in folded), key=_accession_number)
             hits.append({
                 "accession": acc,
                 "title": d["title"],
@@ -99,7 +122,10 @@ class SearchEngine:
                 "score": round(score, 5),
                 "ranks": {name: pos.get(acc) for name, pos in positions.items()},
                 "matched_filters": matched,
-                "url": f"https://osdr.nasa.gov/bio/repo/data/studies/{acc}",
+                "url": _study_url(acc),
+                "related": [{"accession": a, "material_type": self.datasets[a]["material_type"],
+                             "assays": sorted(set(self.datasets[a]["assay_technology"])), "url": _study_url(a)}
+                            for a in related],
             })
         return hits, clean, dropped
 
