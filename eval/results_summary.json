@@ -1,0 +1,62 @@
+[
+ {
+  "set": "known_item",
+  "retriever": "semantic",
+  "n": 50,
+  "recall@5": 0.932,
+  "mrr@10": 0.87,
+  "ndcg@10": 0.887,
+  "hit@1": 40,
+  "hit@5": 48
+ },
+ {
+  "set": "known_item",
+  "retriever": "bm25",
+  "n": 50,
+  "recall@5": 0.944,
+  "mrr@10": 0.911,
+  "ndcg@10": 0.923,
+  "hit@1": 44,
+  "hit@5": 48
+ },
+ {
+  "set": "known_item",
+  "retriever": "hybrid",
+  "n": 50,
+  "recall@5": 0.928,
+  "mrr@10": 0.92,
+  "ndcg@10": 0.912,
+  "hit@1": 45,
+  "hit@5": 48
+ },
+ {
+  "set": "concept",
+  "retriever": "semantic",
+  "n": 32,
+  "recall@5": 0.48,
+  "mrr@10": 0.656,
+  "ndcg@10": 0.484,
+  "hit@1": 17,
+  "hit@5": 26
+ },
+ {
+  "set": "concept",
+  "retriever": "bm25",
+  "n": 32,
+  "recall@5": 0.455,
+  "mrr@10": 0.688,
+  "ndcg@10": 0.45,
+  "hit@1": 17,
+  "hit@5": 29
+ },
+ {
+  "set": "concept",
+  "retriever": "hybrid",
+  "n": 32,
+  "recall@5": 0.489,
+  "mrr@10": 0.76,
+  "ndcg@10": 0.526,
+  "hit@1": 21,
+  "hit@5": 27
+ }
+]

@@ -1,0 +1,1818 @@
+{
+ "set": "known_item",
+ "retriever": "hybrid",
+ "n": 50,
+ "recall@5": 0.928,
+ "mrr@10": 0.92,
+ "ndcg@10": 0.912,
+ "hit@1": 45,
+ "hit@5": 48,
+ "results": [
+  {
+   "query": "how does spaceflight affect mouse liver gene expression?",
+   "expected": [
+    "OSD-48",
+    "OSD-168",
+    "OSD-173",
+    "OSD-379",
+    "OSD-686"
+   ],
+   "shown": [
+    "OSD-686",
+    "OSD-905",
+    "OSD-209",
+    "OSD-48",
+    "OSD-242",
+    "OSD-33",
+    "OSD-536",
+    "OSD-457",
+    "OSD-904",
+    "OSD-912"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 0.4,
+   "rr@10": 1.0,
+   "ndcg@10": 0.48522855511632257,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "kidney transcriptome from mice flown on the Rodent Research Reference Mission 2",
+   "expected": [
+    "OSD-771"
+   ],
+   "shown": [
+    "OSD-771",
+    "OSD-102",
+    "OSD-379",
+    "OSD-163",
+    "OSD-513",
+    "OSD-405",
+    "OSD-562",
+    "OSD-580",
+    "OSD-100",
+    "OSD-511"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "RNA-seq of human vastus lateralis after unilateral lower limb suspension",
+   "expected": [
+    "OSD-540"
+   ],
+   "shown": [
+    "OSD-540",
+    "OSD-787",
+    "OSD-784",
+    "OSD-946",
+    "OSD-295",
+    "OSD-354",
+    "OSD-51",
+    "OSD-198",
+    "OSD-195",
+    "OSD-401"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "sex differences in heart transcriptome of mice fed a western diet as they age",
+   "expected": [
+    "OSD-825"
+   ],
+   "shown": [
+    "OSD-825",
+    "OSD-881",
+    "OSD-720",
+    "OSD-580",
+    "OSD-89",
+    "OSD-908",
+    "OSD-599",
+    "OSD-270",
+    "OSD-912",
+    "OSD-911"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "lung tissue gene expression from the RR-6 mouse mission",
+   "expected": [
+    "OSD-248"
+   ],
+   "shown": [
+    "OSD-93",
+    "OSD-900",
+    "OSD-464",
+    "OSD-148",
+    "OSD-102",
+    "OSD-455",
+    "OSD-915",
+    "OSD-100",
+    "OSD-420",
+    "OSD-235"
+   ],
+   "correct": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 0.0,
+   "rr@10": 0.0,
+   "ndcg@10": 0.0,
+   "uncollapsed_first_hit": null,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "does artificial gravity protect fruit flies from neurological problems in space?",
+   "expected": [
+    "OSD-514"
+   ],
+   "shown": [
+    "OSD-595",
+    "OSD-759",
+    "OSD-609",
+    "OSD-1",
+    "OSD-588",
+    "OSD-610",
+    "OSD-96",
+    "OSD-347",
+    "OSD-714",
+    "OSD-3"
+   ],
+   "correct": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 0.0,
+   "rr@10": 0.0,
+   "ndcg@10": 0.0,
+   "uncollapsed_first_hit": 2,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "genome sequences of heat-tolerant bacteria isolated from a spacecraft assembly cleanroom",
+   "expected": [
+    "OSD-391"
+   ],
+   "shown": [
+    "OSD-391",
+    "OSD-263",
+    "OSD-298",
+    "OSD-300",
+    "OSD-224",
+    "OSD-470",
+    "OSD-26",
+    "OSD-132",
+    "OSD-309",
+    "OSD-306"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "DNA copy number changes in mouse acute myeloid leukemia caused by radiation",
+   "expected": [
+    "OSD-94"
+   ],
+   "shown": [
+    "OSD-94",
+    "OSD-148",
+    "OSD-285",
+    "OSD-972",
+    "OSD-974",
+    "OSD-88",
+    "OSD-156",
+    "OSD-153",
+    "OSD-159",
+    "OSD-158"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "3D endothelial cell cultures exposed to simulated galactic cosmic rays with miRNA countermeasures",
+   "expected": [
+    "OSD-577"
+   ],
+   "shown": [
+    "OSD-577",
+    "OSD-334",
+    "OSD-337",
+    "OSD-366",
+    "OSD-317",
+    "OSD-128",
+    "OSD-331",
+    "OSD-431",
+    "OSD-56",
+    "OSD-719"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "tendon mechanical properties measured by atomic force microscopy after a month on the ISS",
+   "expected": [
+    "OSD-718",
+    "OSD-702"
+   ],
+   "shown": [
+    "OSD-702",
+    "OSD-471",
+    "OSD-817",
+    "OSD-489",
+    "OSD-804",
+    "OSD-324",
+    "OSD-540",
+    "OSD-477",
+    "OSD-955",
+    "OSD-568"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "gut microbiome of mice after high-LET radiation exposure",
+   "expected": [
+    "OSD-146"
+   ],
+   "shown": [
+    "OSD-146",
+    "OSD-72",
+    "OSD-212",
+    "OSD-417",
+    "OSD-360",
+    "OSD-239",
+    "OSD-455",
+    "OSD-340",
+    "OSD-93",
+    "OSD-435"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "microRNA changes in liver after heavy ion HZE radiation",
+   "expected": [
+    "OSD-335"
+   ],
+   "shown": [
+    "OSD-335",
+    "OSD-322",
+    "OSD-317",
+    "OSD-337",
+    "OSD-115",
+    "OSD-71",
+    "OSD-73",
+    "OSD-410",
+    "OSD-117",
+    "OSD-611"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "16S sequencing of surface swabs collected inside the International Space Station",
+   "expected": [
+    "OSD-276",
+    "OSD-734"
+   ],
+   "shown": [
+    "OSD-276",
+    "OSD-65",
+    "OSD-69",
+    "OSD-26",
+    "OSD-734",
+    "OSD-66",
+    "OSD-279",
+    "OSD-224",
+    "OSD-572",
+    "OSD-573"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 0.8503449055347546,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "how do hibernating squirrels avoid muscle atrophy and bone loss?",
+   "expected": [
+    "OSD-319"
+   ],
+   "shown": [
+    "OSD-319",
+    "OSD-653",
+    "OSD-652",
+    "OSD-661",
+    "OSD-488",
+    "OSD-804",
+    "OSD-227",
+    "OSD-617",
+    "OSD-979",
+    "OSD-980"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "histone modification profiling of T cells from the Inspiration4 astronauts",
+   "expected": [
+    "OSD-687"
+   ],
+   "shown": [
+    "OSD-687",
+    "OSD-570",
+    "OSD-425",
+    "OSD-484",
+    "OSD-188",
+    "OSD-172",
+    "OSD-13",
+    "OSD-812",
+    "OSD-689",
+    "OSD-189"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "human iPSC cortical organoids grown in microgravity on the space station",
+   "expected": [
+    "OSD-863"
+   ],
+   "shown": [
+    "OSD-863",
+    "OSD-1008",
+    "OSD-940",
+    "OSD-1000",
+    "OSD-999",
+    "OSD-811",
+    "OSD-516",
+    "OSD-546",
+    "OSD-867",
+    "OSD-258"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "tomato plants grown on the ISS under different light spectra",
+   "expected": [
+    "OSD-767"
+   ],
+   "shown": [
+    "OSD-766",
+    "OSD-767",
+    "OSD-895",
+    "OSD-678",
+    "OSD-745",
+    "OSD-269",
+    "OSD-655",
+    "OSD-346",
+    "OSD-375",
+    "OSD-780"
+   ],
+   "correct": [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 0.5,
+   "ndcg@10": 0.6309297535714575,
+   "uncollapsed_first_hit": 2,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "kidney-on-a-chip response to vitamin D in microgravity",
+   "expected": [
+    "OSD-516"
+   ],
+   "shown": [
+    "OSD-516",
+    "OSD-546",
+    "OSD-684",
+    "OSD-937",
+    "OSD-781",
+    "OSD-462",
+    "OSD-787",
+    "OSD-342",
+    "OSD-771",
+    "OSD-102"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "colorectal cancer organoid growth and drug response in simulated microgravity",
+   "expected": [
+    "OSD-940"
+   ],
+   "shown": [
+    "OSD-940",
+    "OSD-315",
+    "OSD-781",
+    "OSD-812",
+    "OSD-728",
+    "OSD-788",
+    "OSD-43",
+    "OSD-871",
+    "OSD-787",
+    "OSD-125"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "single-cell RNA-seq of blood from young and old mice after spaceflight",
+   "expected": [
+    "OSD-918"
+   ],
+   "shown": [
+    "OSD-404",
+    "OSD-405",
+    "OSD-613",
+    "OSD-402",
+    "OSD-562",
+    "OSD-379",
+    "OSD-771",
+    "OSD-612",
+    "OSD-580",
+    "OSD-904"
+   ],
+   "correct": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 0.0,
+   "rr@10": 0.0,
+   "ndcg@10": 0.0,
+   "uncollapsed_first_hit": null,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "what microbes are in the dust on the Russian segment of the ISS?",
+   "expected": [
+    "OSD-126"
+   ],
+   "shown": [
+    "OSD-126",
+    "OSD-224",
+    "OSD-701",
+    "OSD-26",
+    "OSD-200",
+    "OSD-694",
+    "OSD-64",
+    "OSD-734",
+    "OSD-261",
+    "OSD-132"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "Streptococcus mutans transcriptome under simulated microgravity",
+   "expected": [
+    "OSD-987"
+   ],
+   "shown": [
+    "OSD-106",
+    "OSD-987",
+    "OSD-728",
+    "OSD-356",
+    "OSD-315",
+    "OSD-30",
+    "OSD-539",
+    "OSD-127",
+    "OSD-788",
+    "OSD-43"
+   ],
+   "correct": [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 0.5,
+   "ndcg@10": 0.6309297535714575,
+   "uncollapsed_first_hit": 2,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "multi-omics evidence that mitochondrial stress is central to spaceflight effects",
+   "expected": [
+    "OSD-343"
+   ],
+   "shown": [
+    "OSD-343",
+    "OSD-936",
+    "OSD-326",
+    "OSD-955",
+    "OSD-698",
+    "OSD-956",
+    "OSD-682",
+    "OSD-937",
+    "OSD-685",
+    "OSD-514"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "spleen transcriptome after chronic low-dose radiation combined with hindlimb unloading",
+   "expected": [
+    "OSD-211"
+   ],
+   "shown": [
+    "OSD-211",
+    "OSD-202",
+    "OSD-360",
+    "OSD-984",
+    "OSD-285",
+    "OSD-973",
+    "OSD-288",
+    "OSD-590",
+    "OSD-1015",
+    "OSD-73"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "calcium leak in soleus sarcoplasmic reticulum after spaceflight with BuOE treatment",
+   "expected": [
+    "OSD-691"
+   ],
+   "shown": [
+    "OSD-691",
+    "OSD-488",
+    "OSD-662",
+    "OSD-225",
+    "OSD-698",
+    "OSD-682",
+    "OSD-139",
+    "OSD-770",
+    "OSD-664",
+    "OSD-685"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "microbiology and nutrition of lettuce grown on the space station",
+   "expected": [
+    "OSD-268"
+   ],
+   "shown": [
+    "OSD-268",
+    "OSD-269",
+    "OSD-780",
+    "OSD-655",
+    "OSD-745",
+    "OSD-412",
+    "OSD-895",
+    "OSD-307",
+    "OSD-723",
+    "OSD-734"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "white adipose tissue thermogenesis in female mice on the ISS",
+   "expected": [
+    "OSD-970"
+   ],
+   "shown": [
+    "OSD-970",
+    "OSD-969",
+    "OSD-980",
+    "OSD-457",
+    "OSD-904",
+    "OSD-911",
+    "OSD-580",
+    "OSD-906",
+    "OSD-403",
+    "OSD-912"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "spleen RNA-seq from the RR-23 mission",
+   "expected": [
+    "OSD-506"
+   ],
+   "shown": [
+    "OSD-506",
+    "OSD-420",
+    "OSD-288",
+    "OSD-515",
+    "OSD-463",
+    "OSD-513",
+    "OSD-211",
+    "OSD-464",
+    "OSD-272",
+    "OSD-525"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "gene expression in back muscle and tongue of mice from the Bion-M1 satellite",
+   "expected": [
+    "OSD-135"
+   ],
+   "shown": [
+    "OSD-135",
+    "OSD-111",
+    "OSD-232",
+    "OSD-401",
+    "OSD-139",
+    "OSD-684",
+    "OSD-21",
+    "OSD-326",
+    "OSD-561",
+    "OSD-192"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "sex-specific effects of simulated cosmic radiation on brain organoids rescued by ECM stimulation",
+   "expected": [
+    "OSD-999"
+   ],
+   "shown": [
+    "OSD-999",
+    "OSD-1000",
+    "OSD-719",
+    "OSD-863",
+    "OSD-720",
+    "OSD-776",
+    "OSD-1014",
+    "OSD-835",
+    "OSD-640",
+    "OSD-479"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "genes that indicate gravitropic response in Arabidopsis flowering stems",
+   "expected": [
+    "OSD-531"
+   ],
+   "shown": [
+    "OSD-531",
+    "OSD-38",
+    "OSD-678",
+    "OSD-17",
+    "OSD-518",
+    "OSD-436",
+    "OSD-120",
+    "OSD-321",
+    "OSD-7",
+    "OSD-147"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "proteomics of the rat prefrontal cortex after space radiation",
+   "expected": [
+    "OSD-505"
+   ],
+   "shown": [
+    "OSD-505",
+    "OSD-896",
+    "OSD-834",
+    "OSD-698",
+    "OSD-939",
+    "OSD-682",
+    "OSD-6",
+    "OSD-685",
+    "OSD-522",
+    "OSD-122"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "stem cells differentiating into osteoblasts aboard the ISS",
+   "expected": [
+    "OSD-546"
+   ],
+   "shown": [
+    "OSD-546",
+    "OSD-310",
+    "OSD-258",
+    "OSD-344",
+    "OSD-867",
+    "OSD-811",
+    "OSD-871",
+    "OSD-901",
+    "OSD-127",
+    "OSD-133"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "proteome of MECP2-deficient brain organoids flown in space",
+   "expected": [
+    "OSD-1008"
+   ],
+   "shown": [
+    "OSD-1008",
+    "OSD-863",
+    "OSD-699",
+    "OSD-682",
+    "OSD-685",
+    "OSD-209",
+    "OSD-898",
+    "OSD-613",
+    "OSD-505",
+    "OSD-233"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "Inspiration4 skin spatial transcriptomics and skin microbiome",
+   "expected": [
+    "OSD-574"
+   ],
+   "shown": [
+    "OSD-574",
+    "OSD-572",
+    "OSD-630",
+    "OSD-61",
+    "OSD-237",
+    "OSD-487",
+    "OSD-793",
+    "OSD-116",
+    "OSD-238",
+    "OSD-254"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "E. coli membrane stress adaptation in simulated microgravity",
+   "expected": [
+    "OSD-728"
+   ],
+   "shown": [
+    "OSD-728",
+    "OSD-43",
+    "OSD-788",
+    "OSD-722",
+    "OSD-485",
+    "OSD-189",
+    "OSD-91",
+    "OSD-683",
+    "OSD-12",
+    "OSD-90"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "behaviour-driven altered gravity response in Drosophila transcriptome",
+   "expected": [
+    "OSD-34"
+   ],
+   "shown": [
+    "OSD-34",
+    "OSD-70",
+    "OSD-85",
+    "OSD-514",
+    "OSD-3",
+    "OSD-428",
+    "OSD-436",
+    "OSD-147",
+    "OSD-283",
+    "OSD-172"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "femoral skin from mice on the RR-5 mission",
+   "expected": [
+    "OSD-241"
+   ],
+   "shown": [
+    "OSD-241",
+    "OSD-239",
+    "OSD-254",
+    "OSD-61",
+    "OSD-237",
+    "OSD-243",
+    "OSD-667",
+    "OSD-466",
+    "OSD-900",
+    "OSD-804"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "microarray of mouse skeletal muscle after the STS-108 shuttle flight",
+   "expected": [
+    "OSD-21"
+   ],
+   "shown": [
+    "OSD-21",
+    "OSD-111",
+    "OSD-139",
+    "OSD-4",
+    "OSD-225",
+    "OSD-87",
+    "OSD-937",
+    "OSD-3",
+    "OSD-684",
+    "OSD-401"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "adrenal gland transcriptomics and proteomics from Rodent Research 3",
+   "expected": [
+    "OSD-161"
+   ],
+   "shown": [
+    "OSD-161",
+    "OSD-98",
+    "OSD-512",
+    "OSD-566",
+    "OSD-100",
+    "OSD-99",
+    "OSD-271",
+    "OSD-63",
+    "OSD-511",
+    "OSD-162"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "Staphylococcus aureus BRIC-23 multi-omics process verification",
+   "expected": [
+    "OSD-145"
+   ],
+   "shown": [
+    "OSD-145",
+    "OSD-500",
+    "OSD-138",
+    "OSD-372",
+    "OSD-683",
+    "OSD-67",
+    "OSD-185",
+    "OSD-582",
+    "OSD-49",
+    "OSD-361"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "retina photoreceptor damage and oxidative stress in mice flown on RR-9",
+   "expected": [
+    "OSD-557"
+   ],
+   "shown": [
+    "OSD-557",
+    "OSD-255",
+    "OSD-568",
+    "OSD-758",
+    "OSD-715",
+    "OSD-87",
+    "OSD-194",
+    "OSD-203",
+    "OSD-525",
+    "OSD-465"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "human cardiac spheres proliferation genes in space microgravity",
+   "expected": [
+    "OSD-811"
+   ],
+   "shown": [
+    "OSD-811",
+    "OSD-127",
+    "OSD-541",
+    "OSD-258",
+    "OSD-56",
+    "OSD-635",
+    "OSD-867",
+    "OSD-55",
+    "OSD-431",
+    "OSD-684"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "metabolic response of mouse skin flown on STS-135",
+   "expected": [
+    "OSD-116"
+   ],
+   "shown": [
+    "OSD-116",
+    "OSD-108",
+    "OSD-61",
+    "OSD-87",
+    "OSD-173",
+    "OSD-254",
+    "OSD-25",
+    "OSD-237",
+    "OSD-238",
+    "OSD-222"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "U937 monocyte gene expression on a sounding rocket flight",
+   "expected": [
+    "OSD-297"
+   ],
+   "shown": [
+    "OSD-297",
+    "OSD-188",
+    "OSD-283",
+    "OSD-689",
+    "OSD-485",
+    "OSD-50",
+    "OSD-172",
+    "OSD-111",
+    "OSD-87",
+    "OSD-536"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "C. elegans microgravity experiment CERISE 8 days",
+   "expected": [
+    "OSD-41"
+   ],
+   "shown": [
+    "OSD-41",
+    "OSD-112",
+    "OSD-113",
+    "OSD-35",
+    "OSD-42",
+    "OSD-425",
+    "OSD-75",
+    "OSD-956",
+    "OSD-60",
+    "OSD-45"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "reactive oxygen species genes in Mizuna plants after long-term spaceflight",
+   "expected": [
+    "OSD-59"
+   ],
+   "shown": [
+    "OSD-59",
+    "OSD-321",
+    "OSD-655",
+    "OSD-745",
+    "OSD-624",
+    "OSD-678",
+    "OSD-536",
+    "OSD-218",
+    "OSD-223",
+    "OSD-658"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "cryopreserved spermatogonial stem cells kept on the ISS and germline transmission",
+   "expected": [
+    "OSD-888"
+   ],
+   "shown": [
+    "OSD-888",
+    "OSD-901",
+    "OSD-811",
+    "OSD-871",
+    "OSD-546",
+    "OSD-867",
+    "OSD-127",
+    "OSD-344",
+    "OSD-258",
+    "OSD-419"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "neuroinflammation gene expression in the mouse brain after spaceflight",
+   "expected": [
+    "OSD-536"
+   ],
+   "shown": [
+    "OSD-536",
+    "OSD-698",
+    "OSD-898",
+    "OSD-33",
+    "OSD-738",
+    "OSD-682",
+    "OSD-685",
+    "OSD-752",
+    "OSD-32",
+    "OSD-916"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  },
+  {
+   "query": "Burkholderia biofilm from the ISS water processor under simulated microgravity",
+   "expected": [
+    "OSD-729"
+   ],
+   "shown": [
+    "OSD-729",
+    "OSD-372",
+    "OSD-627",
+    "OSD-554",
+    "OSD-728",
+    "OSD-358",
+    "OSD-279",
+    "OSD-528",
+    "OSD-628",
+    "OSD-11"
+   ],
+   "correct": [
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   "recall@5": 1.0,
+   "rr@10": 1.0,
+   "ndcg@10": 1.0,
+   "uncollapsed_first_hit": 1,
+   "filters": {},
+   "dropped": []
+  }
+ ]
+}
