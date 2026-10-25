@@ -1,8 +1,8 @@
-fastapi
-uvicorn[standard]
-anthropic
-fastembed
-numpy
-pydantic
-requests
-python-dotenv
+anthropic==1.16.0
+fastapi==0.156.2
+fastembed==0.9.0
+numpy==2.4.6
+pydantic==2.14.1
+python-dotenv==1.2.4
+requests==2.34.2
+uvicorn[standard]==0.54.0

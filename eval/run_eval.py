@@ -29,7 +29,7 @@ def main():
         sys.exit("--llm requested but ANTHROPIC_API_KEY is not set")
     mode = "llm" if args.llm else "semantic"
 
-    results, top1 = [], 0
+    results = []
     hits = {k: 0 for k in (1, 3, args.k)}
     t0 = time.time()
     for t in tests:

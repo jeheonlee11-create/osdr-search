@@ -7,12 +7,11 @@ step if the corpus grew by a few orders of magnitude.
 
 import json
 import sys
-from pathlib import Path
 
 import numpy as np
 from fastembed import TextEmbedding
 
-from .fetch import DATASETS_PATH, DATA_DIR
+from .fetch import DATA_DIR, DATASETS_PATH
 
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 INDEX_PATH = DATA_DIR / "index.npz"

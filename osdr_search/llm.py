@@ -23,7 +23,8 @@ class StructuredQuery(BaseModel):
     organism: List[str] = Field(default_factory=list, description="Scientific names, e.g. 'Mus musculus'.")
     material_type: List[str] = Field(default_factory=list, description="Tissue / sample material, e.g. 'Liver'.")
     tissue: List[str] = Field(default_factory=list, description="Only when the tissue vocabulary has a match.")
-    spaceflight: List[str] = Field(default_factory=list, description="Flight condition, e.g. 'Space Flight', 'Ground Control'.")
+    spaceflight: List[str] = Field(
+        default_factory=list, description="Flight condition, e.g. 'Space Flight', 'Ground Control'.")
     assay_technology: List[str] = Field(default_factory=list)
     assay_measurement: List[str] = Field(default_factory=list)
     mission: List[str] = Field(default_factory=list)
