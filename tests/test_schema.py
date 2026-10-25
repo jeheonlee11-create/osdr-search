@@ -101,3 +101,28 @@ def test_controlled_fields_need_exact_value(schema):
 def test_sparse_field_absence_is_not_a_contradiction(schema):
     matched, contradicted = schema.dataset_matches("OSD-1", {"spaceflight": ["Space Flight"]})
     assert matched == [] and contradicted == []
+
+
+def test_sparse_fields_are_computed_from_the_data(schema):
+    # tissue: no dataset has it; spaceflight: 5 of 7 lack it; material_type: only OSD-7 lacks it (1/7)
+    assert {"tissue", "spaceflight", "mission"} <= schema.sparse_fields
+    assert "material_type" not in schema.sparse_fields
+    assert "organism" not in schema.sparse_fields
+    assert schema.missing_share["material_type"] == pytest.approx(1 / 7)
+
+
+def test_missing_mission_is_not_a_contradiction():
+    rows = ROWS + [row("OSD-8", organism="Mus musculus", mission="SpaceX-16")]
+    s = Schema(rows=rows)
+    assert "mission" in s.sparse_fields
+    assert s.dataset_matches("OSD-1", {"mission": ["SpaceX-16"]}) == ([], [])
+    assert s.dataset_matches("OSD-8", {"mission": ["SpaceX-16"]}) == (["mission"], [])
+
+
+def test_missing_dense_field_still_contradicts(schema):
+    # OSD-7 has no material type; material_type is dense, so asking for liver counts against it
+    assert schema.dataset_matches("OSD-7", {"material_type": ["Liver"]}) == ([], ["material_type"])
+
+
+def test_dataset_without_samples_has_no_evidence(schema):
+    assert schema.dataset_matches("OSD-999", {"organism": ["Mus musculus"]}) == ([], [])

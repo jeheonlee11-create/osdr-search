@@ -26,6 +26,14 @@ QUERY_FIELDS = {
 
 FUZZY_CUTOFF = 0.88
 
+# A field is "sparse" when more than this share of datasets carry no value for
+# it at all. On the 641-dataset corpus that is tissue (98% missing), mission
+# (51%) and spaceflight (46%); material_type (14%), project_type (<1%),
+# organism and the assay fields (0%) are dense. For a sparse field, a dataset
+# that lacks the field is "unknown", not a contradiction: half the datasets
+# have no mission recorded, which says nothing about which mission they flew.
+SPARSE_THRESHOLD = 0.25
+
 # Anatomy-like fields whose values are free-text descriptions of a site
 # ("Liver", "Left Lobe of the Liver", "Right soleus"). A filter value matches
 # one of these when its words appear, in order and as whole words, inside the
@@ -84,6 +92,11 @@ class Schema:
         self.vocab = {f: sorted(values[f], key=str.lower) for f in QUERY_FIELDS}
         self._lower = {f: {v.lower(): v for v in vs} for f, vs in self.vocab.items()}
         self.per_dataset = {a: dict(fs) for a, fs in per_dataset.items()}
+        n = len(self.per_dataset)
+        # share of datasets (with any samples) that have no value for each field
+        self.missing_share = {f: (sum(f not in fs for fs in self.per_dataset.values()) / n if n else 1.0)
+                              for f in QUERY_FIELDS}
+        self.sparse_fields = {f for f, share in self.missing_share.items() if share > SPARSE_THRESHOLD}
 
     def resolve(self, field, value):
         """Map a proposed value onto a real vocabulary value, or None."""
@@ -117,11 +130,13 @@ class Schema:
 
     def dataset_matches(self, accession, clean):
         """Which validated filter fields does this dataset satisfy (and which does it contradict)?"""
-        have = self.per_dataset.get(accession, {})
+        have = self.per_dataset.get(accession)
         matched, contradicted = [], []
+        if have is None:
+            return matched, contradicted  # no samples in the table: no evidence either way
         for field, vals in clean.items():
-            if field in ("spaceflight", "tissue") and field not in have:
-                continue  # sparse fields: absence is not evidence against
+            if field in self.sparse_fields and field not in have:
+                continue  # sparse field: absence is not evidence against
             if any(value_matches(field, v, h) for v in vals for h in have.get(field, ())):
                 matched.append(field)
             else:
