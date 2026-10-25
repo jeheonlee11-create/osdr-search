@@ -10,7 +10,7 @@ from .fetch import DATASETS_PATH
 from .fusion import RRF_K, rrf
 from .index import VectorIndex, check_fingerprint, doc_text
 from .llm import QueryTranslator, accept_search_text
-from .osdr_api import build_url, run
+from .osdr_api import SampleQueryTooLarge, build_url, run
 from .schema import Schema
 
 log = logging.getLogger(__name__)
@@ -25,6 +25,7 @@ FILTER_WEIGHT = 1.0
 REWRITE_WEIGHT = 0.5
 # What the browser sees when a step fails; the exception itself is only logged server-side.
 LLM_ERROR = "The LLM step failed, so these results use keyword + semantic ranking without filters."
+SAMPLES_TOO_LARGE = "Too many matching samples to show here; ask for fewer datasets or a narrower question."
 SAMPLES_ERROR = "The live OSDR sample query failed or timed out. The samples URL above can be opened directly."
 
 
@@ -61,6 +62,10 @@ class SearchEngine:
             translator = QueryTranslator(self.schema)
         self.translator = translator
         self.llm_enabled = bool(self.translator and self.translator.enabled)
+
+    def warmup(self):
+        """Load the embedding model now rather than on the first user's query."""
+        self.index.search("warmup", k=1)
 
     def rankings(self, text, retriever=None):
         """{ranker name: [accession, ...]} for one piece of query text."""
@@ -172,6 +177,9 @@ class SearchEngine:
                 order = {h["accession"]: i for i, h in enumerate(hits)}
                 samples["rows"].sort(key=lambda r: order.get(r.get("accession"), len(order)))
                 result["samples"] = samples
+            except SampleQueryTooLarge:
+                log.warning("OSDR sample query too large: %s", url)
+                result["samples"] = {"error": SAMPLES_TOO_LARGE, "total": 0, "rows": []}
             except Exception:  # noqa: BLE001
                 log.exception("OSDR sample query failed: %s", url)
                 result["samples"] = {"error": SAMPLES_ERROR, "total": 0, "rows": []}

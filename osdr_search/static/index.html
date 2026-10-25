@@ -60,7 +60,7 @@
 </header>
 <main>
   <form id="f">
-    <input type="text" id="q" placeholder="e.g. how does spaceflight affect mouse liver gene expression?" autofocus>
+    <input type="text" id="q" maxlength="300" placeholder="e.g. how does spaceflight affect mouse liver gene expression?" autofocus>
     <button id="go" type="submit">Search</button>
   </form>
   <div class="examples" id="examples"></div>
@@ -103,7 +103,8 @@ async function run() {
   $("go").disabled = true; $("status").textContent = "Searching…"; $("results").hidden = true;
   try {
     const r = await fetch(`/api/search?q=${encodeURIComponent(q)}&k=10`);
-    if (!r.ok) throw new Error(await r.text());
+    if (!r.ok) throw new Error(r.status === 429 ? "too many searches from this address; wait a minute"
+      : r.status === 422 ? "the question must be 2 to 300 characters" : `server returned ${r.status}`);
     render(await r.json());
   } catch (e) {
     $("status").textContent = "Error: " + e.message;
