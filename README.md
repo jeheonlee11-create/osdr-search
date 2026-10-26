@@ -94,6 +94,10 @@ ruff check . && pytest            # no data/ files, network, model download or A
 python -m eval.run_eval           # needs data/samples.json and data/index.npz
 ```
 
+## History
+
+I first built this in summer 2025 (June to August) as independent research, before I had a GitHub account, so that version was never published. This repository is a rebuild I started in October 2026, which is why its commit history begins then. The hybrid retrieval, test sets and results above all come from the rebuild.
+
 ## How it was built
 
 Built by Jeheon Lee with AI coding assistants (Claude Code, OpenAI Codex). I set the direction and design, and verified behavior with the tests and evaluation above. The concept test set's queries were written by Claude Code from the metadata, as described in [docs/evaluation.md](docs/evaluation.md).
